@@ -52,7 +52,7 @@ block content
 						div!= information.details.replace(/\n/g, '<br />')
 
 	hr
-	- if (profile.tags.split(";").length > 0 && profile.tags.split(";")[0])
+	- if (profile.tags.split(";").length > 0)
 		h3 Tags of technologies
 		- each tag in profile.tags.split(";")
 			- if (tag)
