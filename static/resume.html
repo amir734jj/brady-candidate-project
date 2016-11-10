@@ -151,13 +151,12 @@
 					details: self.$el.find("textarea").val()
 				});
 
-				this.model.trigger('change');
-
 				if (this.callback) {
 					this.callback(this.model);
 				} else {
-					this.model.save();
+					this.model.collection.sync("update", this.model);
 				}
+
 				this.teardown();
 			},
 			onSubmit: function(e) {
@@ -167,6 +166,7 @@
 
 		var InformationModel = Backbone.Model.extend({
 			id: -1,
+			idAttribute: "id",
 			defaults: {
 				type: " ",
 				title: " ",
@@ -228,10 +228,7 @@
 				this.$el.empty();
 				this.collection.each(function(information) {
 					var informationView = new InformationView({
-						model: information,
-						callback: function(model) {
-							self.collection.add(model);
-						}
+						model: information
 					});
 					this.$el.append(informationView.el);
 				}, this);

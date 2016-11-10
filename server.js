@@ -198,7 +198,7 @@ app.get("/profile/list", function(req, res) {
 				return _.pick(user, "firstName", "lastName", "email", "hashcode");
 			});
 
-			metadata.getRate(req, sequelize, databaseModels.rateModel, function(rates) {
+			metadata.getRates(req, sequelize, databaseModels.rateModel, function(rates) {
 				users = _.map(users, function(user) {
 					user.rates = _.where(rates, {
 						target: user.hashcode
@@ -215,7 +215,7 @@ app.get("/profile/list", function(req, res) {
 						}
 					});
 					user.rank = user.like + user.dislike;
-					user = _.omit(user, "rates");
+					//user = _.omit(user, "rates");
 
 					return user;
 				});
@@ -330,13 +330,9 @@ app.post("/builer/informations/tags", function(req, res) {
 	}
 });
 
-
-
-
-
 app.listen(80, function() {
 	databaseModels = database.initialize(sequelize, Sequelize);
-	console.log("Example app listening on port %s!", 80);
+	console.log("Resume app listening on port %s!", 80);
 });
 
 
