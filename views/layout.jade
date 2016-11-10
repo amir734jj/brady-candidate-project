@@ -1,0 +1,71 @@
+doctype html
+html(lang="en")
+	head
+		title= "Resume archive"
+		meta(name="viewport", content="width=device-width, initial-scale=1.0")
+
+		link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css')
+		link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css")
+		link(rel="stylesheet", href="https://fonts.googleapis.com/css?family=Roboto")
+		link(rel="stylesheet", href="/static/css/style.css")
+		
+		script(src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js")
+		script(src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js')
+		script(src="https://cdn.jsdelivr.net/jdenticon/1.3.2/jdenticon.min.js")
+		
+		block head
+		
+	body
+		nav.navbar.navbar-inverse
+			.container-fluid
+				.navbar-header
+					button.navbar-toggle(type="button", data-toggle="collapse", data-target="#navigationbar")
+						span.icon-bar
+						span.icon-bar
+						span.icon-bar
+					a.navbar-brand(href="/")
+						span.fa.fa-cubes
+						| &nbsp Resume archive!
+				.collapse.navbar-collapse(id="navigationbar")
+					ul.nav.navbar-nav.navbar-left
+						- if (user)
+							li
+								a(href="/about")
+									i(class="fa fa-diamond")
+									| &nbsp About Us
+
+					ul.nav.navbar-nav.navbar-right
+						- if (user && user.admin)
+							li
+								a(href="/administrative")
+									i(class="fa fa-sign-out")
+									| &nbsp Administrative
+						- if (user)
+							li
+								a(href="/rate")
+									i(class="fa fa-thermometer-full")
+									| &nbsp Rate others                       
+							li
+								a(href="/builder")
+									i(class="fa fa-beer")
+									| &nbsp Resume builder
+							li
+								a(href="/account")
+									i(class="fa fa-cog")
+									| &nbsp Account
+							li
+								a(href="/logout")
+									i(class="fa fa-sign-out")
+									| &nbsp Logout
+						- else
+							li
+								a(href="/register")
+									i(class="fa fa-pencil-square")
+									| &nbsp Register
+							li
+								a(href="/login")
+									i(class="fa fa-sign-in")
+									| &nbsp Login
+		.container
+			.jumbotron
+				block content

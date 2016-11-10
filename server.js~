@@ -1,0 +1,45 @@
+var express = require('express');
+var bodyParser = require("body-parser")
+var _ = require("underscore");
+var Sequelize = require('sequelize');
+var app = express();
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+	extended: true
+}));
+
+
+app.use("/bower_components", express.static(__dirname + "/bower_components"));
+app.use("/", express.static(__dirname + "/static"));
+
+// connect to database
+var sequelize = new Sequelize(null, null, null, {
+  dialect: 'sqlite',
+  pool: {
+    max: 5,
+    min: 0,
+    idle: 10000
+  },
+  storage: 'database/db.sqlite'
+});
+
+//	use sequelize as a session store
+app.use(session({
+	secret: "This is a secret!",
+	store: new SequelizeStore({
+		db: sequelize
+	}),
+	proxy: true,
+	resave: false,
+	saveUninitialized: true,
+	cookie: {
+		maxAge: 60 * 60 * 1000
+	}
+}));
+
+
+
+app.listen(80, function() {
+	console.log('Example app listening on port %s!', 80);
+});

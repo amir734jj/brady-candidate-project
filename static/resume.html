@@ -1,0 +1,284 @@
+<style>
+	table {
+		table-layout: fixed;
+	}
+
+	textarea {
+		max-width: 100%;
+		max-height: 100%;
+	}
+</style>
+
+<h1>Resume builder</h1>
+
+<table class="table table-bordered">
+	<thead>
+		<tr>
+			<th>Type</th>
+			<th>Title</th>
+			<th class="hidden-xs">Starting date</th>
+			<th class="hidden-xs">Ending date</th>
+			<th>Details</th>
+			<th>Actions</th>
+		</tr>
+	</thead>
+
+	<tbody id="informations">
+		<script type="text/template" id="info-row">
+			<tr>
+				<td>
+					<%=type%>
+				</td>
+				<td>
+					<%=title%>
+				</td>
+				<td class="hidden-xs">
+					<%=start%>
+				</td>
+				<td class="hidden-xs">
+					<%=end%>
+				</td>
+				<td>
+					<%=((details && details.length && details.length >= 20) ? details.substring(0, 20) : details ) + "..."%>
+				</td>
+				<td>
+					<botton class="btn btn-primary" data-action="modify">edit</botton>
+					<botton class="btn btn-danger" data-action="delete">delete</botton>
+				</td>
+				<tr>
+		</script>
+
+	</tbody>
+</table>
+
+<div id="actions">
+	<botton class="btn btn-primary" id="addInformation">Add information</botton>
+</div>
+
+
+<script type="text/template" id="info-modify">
+	<div class="modal fade" id="edit-modal" role="dialog">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4 class="modal-title">INFORMATION</h4>
+				</div>
+				<div class="modal-body">
+					<form>
+						<div class="radio">
+							<label><input type="radio" data-type="education" name="type" <%= (type == "education") ? "checked" : ""%>> Education</label>
+						</div>
+
+						<div class="radio">
+							<label><input type="radio" data-type="experience" name="type" <%= (type == "experience") ? "checked" : ""%>> Experience</label>
+						</div>
+
+						<div class="radio">
+							<label><input type="radio" data-type="project" name="type" <%= (type == "project") ? "checked" : ""%>> Project</label>
+						</div>
+
+						<div class="form-group">
+							<label>Title for Degree or experience (e.g. Computer Sci. | Software dev.):</label>
+							<input type="text" class="form-control" value="<%=title%>" name="title" required="">
+						</div>
+
+						<div class="form-group">
+							<label>Start date:</label>
+							<input type="number" class="form-control" value="<%=start%>" name="start">
+						</div>
+
+						<div class="form-group">
+							<label>End date:</label>
+							<input type="number" class="form-control" value="<%=end%>" name="end">
+						</div>
+
+						<div class="form-group">
+							<label>Details:</label>
+							<textarea rows="5" class="form-control" name="details"><%=details%></textarea>
+						</div>
+
+						<button type="submit" class="btn btn-success">Submit</button>
+					</form>
+
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+</script>
+
+
+<div id="modal">
+</div>
+
+
+
+<script>
+	$(function() {
+		var baseModalView = Backbone.View.extend({
+			el: $("#modal"),
+			template: _.template($("#info-modify").html()),
+			events: {
+				'hidden': 'teardown',
+				"click button[type='submit']": "notify",
+				"submit form": "onSubmit"
+			},
+			initialize: function(options) {
+				_.bindAll(this, "show", "teardown", "render", "notify");
+				this.render();
+				this.show();
+				this.callback = options.callback;
+			},
+			show: function() {
+				this.$el.modal('show');
+			},
+			teardown: function() {
+				this.$el.modal("hide");
+				//this.$el.remove();
+			},
+			render: function() {
+				this.$el.empty();
+				this.setElement(this.template(this.model.toJSON()));
+			},
+			notify: function() {
+				var self = this;
+				this.model.set({
+					title: self.$el.find("[name='title']").val(),
+					type: self.$el.find("[type='radio']:checked").data("type"),
+					start: self.$el.find("[name='start']").val(),
+					end: self.$el.find("[name='end']").val(),
+					details: self.$el.find("textarea").val()
+				});
+
+				this.model.trigger('change');
+
+				if (this.callback) {
+					this.callback(this.model);
+				} else {
+					this.model.save();
+				}
+				this.teardown();
+			},
+			onSubmit: function(e) {
+				e.preventDefault();
+			}
+		});
+
+		var InformationModel = Backbone.Model.extend({
+			id: -1,
+			defaults: {
+				type: " ",
+				title: " ",
+				start: 2015,
+				end: 2016,
+				details: " "
+			}
+		});
+
+		var InformationView = Backbone.View.extend({
+			events: {
+				"click [data-action='modify']": "modifyInformation",
+				"click [data-action='delete']": "deleteInformation"
+			},
+			template: _.template($("#info-row").html()),
+			initialize: function() {
+				_.bindAll(this, "render", "modifyInformation", "deleteInformation");
+				this.model.on('change', this.render, this);
+				this.render();
+			},
+			render: function() {
+				this.setElement(this.template(this.model.toJSON()));
+			},
+			modifyInformation: function() {
+				var self = this;
+				modalView = new baseModalView({
+					model: self.model,
+					template: _.template($("#info-modify").html())
+				});
+			},
+			deleteInformation: function() {
+				this.model.destroy();
+			}
+		})
+
+		var InformationCollection = Backbone.Collection.extend({
+			url: "/builder/informations",
+			model: InformationModel,
+			initialize: function() {
+				this.fetch();
+			}
+		});
+
+		var InformationsView = Backbone.View.extend({
+			el: $("#informations"),
+			initialize: function() {
+				_.bindAll(this, "render", "addInformation");
+				var self = this;
+				this.collection = new InformationCollection();
+
+				// I know this is not a Backbone way...
+				$("#addInformation").on("click", function() {
+					self.addInformation();
+				});
+
+				this.collection.bind("all", this.render);
+			},
+			render: function() {
+				this.$el.empty();
+				this.collection.each(function(information) {
+					var informationView = new InformationView({
+						model: information,
+						callback: function(model) {
+							self.collection.add(model);
+						}
+					});
+					this.$el.append(informationView.el);
+				}, this);
+			},
+			addInformation: function() {
+				var self = this;
+				modalView = new baseModalView({
+					model: new InformationModel(),
+					callback: function(model) {
+						self.collection.create(model);
+					}
+				});
+			}
+		});
+
+		$("form").submit(function(e) {
+			e.preventDefault();
+			return false;
+		});
+
+		Backbone.history.start({
+			pushState: true
+		});
+
+		new InformationsView();
+
+
+		$('#tags').tagsInput({
+			'height': '8em',
+			'width': '24em',
+			'interactive': true,
+			'defaultText': 'add a tag',
+			'onAddTag': function(tag) {
+				$.post("/builer/informations/tags/", {
+					"tag": tag,
+					"action": "add"
+				});
+			},
+			'onRemoveTag': function(tag) {
+				$.post("/builer/informations/tags/", {
+					"tag": tag,
+					"action": "remove"
+				});
+			},
+			'delimiter': ";",
+			'removeWithBackspace': true,
+			'placeholderColor': '#666666'
+		}).importTags(tags);
+	});
+</script>

@@ -1,0 +1,62 @@
+extends ./layout.jade
+
+block content
+	.col-md-8
+		h2
+			|  #{profile.firstName}  #{profile.lastName}
+		.clearfix
+		h4
+			| Send Email to 
+			a(href="mailto:#{profile.email}?Subject=Visitor form UWMNow!", target="_top") #{profile.email}
+		h4 Major: #{profile.major}
+		h4 Bio:
+		p
+			| #{profile.bio}
+		h4 Links:
+
+		a.btn.btn-default(href="#{profile.linkedin}")
+			i.fa.fa-linkedin-square.fa-2x(aria-hidden="true", title="Edit")
+		a.btn.btn-default(href="#{profile.twitter}")
+			i.fa.fa-twitter-square.fa-2x(aria-hidden="true")
+		a.btn.btn-default(href="#{profile.facebook}")
+			i.fa.fa-facebook-square.fa-2x(aria-hidden="true")
+
+	.col-md-4.hidden-xs
+		- if (profile.image && profile.image == true)
+			img(src="/image/#{profile.filename}", class="img-rounded", style="max-width: 200px;")
+		- else
+			canvas(data-jdenticon-hash="#{profile.hashcode}", class="img-rounded", width="304", height="236")
+
+	.clearfix
+
+	hr
+	- if (informations.length > 0)
+		ul.list-group
+			h3 Education
+			- each information in informations
+				- if (information.type == "education")
+					li.list-group-item
+						h4 #{information.title} (#{information.start} - #{information.end})
+						div!= information.details.replace(/\n/g, '<br />')
+			h3 Experience
+			- each information in informations
+				- if (information.type == "experience")
+					li.list-group-item
+						h4 #{information.title} (#{information.start} - #{information.end})
+						div!= information.details.replace(/\n/g, '<br />')
+			h3 Projects
+			- each information in informations
+				- if (information.type == "project")
+					li.list-group-item
+						h4 #{information.title} (#{information.start} - #{information.end})
+						div!= information.details.replace(/\n/g, '<br />')
+
+	hr
+	- if (profile.tags.split(";").length > 0 && profile.tags.split(";")[0])
+		h3 Tags of technologies
+		- each tag in profile.tags.split(";")
+			- if (tag)
+				botton.btn.btn-primary #{tag}
+		
+	
+	

@@ -1,0 +1,142 @@
+<table class="table table-bordered">
+	<thead>
+		<tr>
+			<th>Rank</th>
+			<th>Firstname</th>
+			<th class="hidden-xs">Lastname</th>
+			<th class="hidden-xs">Email</th>
+			<th>Rate</th>
+			<th>Link</th>
+		</tr>
+	</thead>
+
+	<tbody id="user-list">
+		<script type="text/template" id="user-row">
+			<tr>
+				<td>
+					<span class="badge badge-default"><%=rank%></span>
+				</td>
+				<td>
+					<%=firstName%>
+				</td>
+				<td class="hidden-xs">
+					<%=lastName%>
+				</td>
+				<td class="hidden-xs">
+					<%=email%>
+				</td>
+				<td>
+					<div class="btn-group-vertical">
+						<button class="btn btn-success like"><span class="badge badge-default"><%=like%></span> <i class="fa fa-thumbs-up" aria-hidden="true"></i></button>
+						<button class="btn btn-danger dislike"><span class="badge badge-default"><%=dislike%></span> <i class="fa fa-thumbs-down" aria-hidden="true"></i></button>
+					</div>
+				</td>
+				<td>
+					<a target="_blank" href="/profile/<%=hashcode%>" class="btn btn-primary">Link</a>
+				</td>
+				<tr>
+		</script>
+
+	</tbody>
+</table>
+
+
+<script>
+	Backbone.history.start({
+		pushState: true
+	});
+
+	var ProfileModel = Backbone.Model.extend({
+		idAttribute: "hashcode",
+		defaults: {
+			firstName: " ",
+			lastName: " ",
+			hashcode: " ",
+			email: " ",
+			rank: 0,
+			rates: [],
+			like: 0,
+			dislike: 0,
+			collection: null
+		},
+		sync: function(method, model, options) {
+			$.ajax({
+				type: "POST",
+				data: {
+					value: model.toJSON().try,
+					target: model.toJSON().hashcode
+				},
+				url: "/profile/rate",
+				success: function() {
+					model.collection.fetch();
+				}
+			});
+		}
+	});
+
+
+	var ProfileView = Backbone.View.extend({
+		events: {
+			"click .like": "processLike",
+			"click .dislike": "processDislike"
+		},
+		template: _.template($("#user-row").html()),
+		initialize: function() {
+			_.bindAll(this, "render", "processLike", "processDislike");
+			this.model.on('change', this.render, this);
+			this.render();
+		},
+		render: function() {
+			this.setElement(this.template(this.model.toJSON()));
+		},
+		processLike: function() {
+			var self = this;
+			this.model.set({
+				"try": 1
+			});
+			this.model.save();
+		},
+		processDislike: function() {
+			var self = this;
+			this.model.set({
+				"try": -1
+			});
+
+			this.model.save();
+		}
+	});
+
+	var ProfileCollection = Backbone.Collection.extend({
+		url: "/profile/list",
+		model: ProfileModel,
+		initialize: function() {
+			this.fetch();
+		}
+	});
+
+	var ProfileCollectionView = Backbone.View.extend({
+		el: $("#user-list"),
+		initialize: function() {
+			_.bindAll(this, "render");
+			var self = this;
+			this.collection = new ProfileCollection();
+			this.collection.bind("all", this.render);
+		},
+		render: function() {
+			var self = this;
+			this.$el.empty();
+			this.collection.each(function(user) {
+				user.collection = self.collection;
+				var profileView = new ProfileView({
+					model: user,
+					callback: function(model) {
+						self.collection.add(model);
+					}
+				});
+				this.$el.append(profileView.el);
+			}, this);
+		}
+	});
+
+	new ProfileCollectionView();
+</script>

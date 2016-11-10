@@ -1,0 +1,56 @@
+extends ./layout.jade
+
+block content
+	.container
+		h2 Account information:
+
+		form(role="form", action="/account", method="post", required, enctype="multipart/form-data")
+			.col-md-8
+				div.form-group
+					label First Name:
+					input.form-control(type="text", placeholder="Enter First Name", name="firstName", autofocus="", value="#{user.firstName}", required, pattern="[A-Za-z]*", title="Alphabetic characters only")
+				div.form-group
+					label Last Name:
+					input.form-control(type="text", placeholder="Enter Last Name", name="lastName", autofocus="", value="#{user.lastName}", required, pattern="[A-Za-z]*", title="Alphabetic characters only")
+				div.form-group
+					label Email:
+					input.form-control(type="email", placeholder="Enter Email", name="email", required, pattern="[A-Za-z0-9]*\@uwm.edu", title="@UWM.edu emails only", value="#{user.email}", disabled)
+				div.form-group
+					label Password:
+					input.form-control(type="password", placeholder="Enter Password", name="password", required, value="#{user.password}")
+
+				h4 Extended Account Information (not required):
+
+				div.form-group
+					label Major:
+					input.form-control(type="text", placeholder="Major", name="major", value="#{user.major}")
+				div.form-group
+					label Bio (140 characters):
+					textarea.form-control(maxlength="140", name="bio", placeholder="Biography")
+						| #{user.bio}
+				div.form-group
+					label linkedin:
+					input.form-control(type="url", placeholder="Linkedin", name="linkedin", value="#{user.linkedin}")
+				div.form-group
+					label Twitter:
+					input.form-control(type="url", placeholder="Twitter", name="twitter", value="#{user.twitter}")
+				div.form-group
+					label Facebook:
+					input.form-control(type="url", placeholder="Facebook", name="facebook", value="#{user.facebook}")
+				div.btn-group
+					button.btn.btn-primary(type="submit", autofocus) Update account information
+					a.btn.btn-default(href="/profile/#{user.hashcode}") View profile as other users
+			.col-md-4.hidden-sm
+				- if (user.image && user.image == true)
+					img(src="image/#{user.filename}", class="img-rounded", style="max-width: 200px;")
+				- else
+					canvas(data-jdenticon-hash="#{user.hashcode}", class="img-rounded", width="304", height="236")
+
+				hr
+
+				.fileinput.fileinput-new(data-provides='fileinput')
+					btn-group
+						input(class="btn btn-default", type="file", accept="image/*", name="image")
+						- if (user.image && user.image == true)
+							a(class="btn btn-danger", href="image/#{user.filename}/delete")
+								| Delete Image
