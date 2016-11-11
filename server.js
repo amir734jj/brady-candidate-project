@@ -369,12 +369,13 @@ app.get("/search", function(req, res) {
 				var token = req.query.keyword.replace(" ", "").toLowerCase();
 
 				payload = _.union(payload, _.filter(users, function(user) {
-					return JSON.stringify(user).replace(" ", "").toLowerCase().includes(token);
+					// we could have use ES6's token menthod but lets be safe
+					return JSON.stringify(user).replace(" ", "").toLowerCase().indexOf(token) > -1;
 				}));
 
 				information.getAll(req, sequelize, databaseModels.informationModel, function(informations) {
 					payload = _.union(payload, _.map(_.filter(informations, function(information) {
-						return JSON.stringify(information).replace(" ", "").toLowerCase().includes(token);
+						return JSON.stringify(information).replace(" ", "").toLowerCase().indexOf(token) > -1;
 					}), function(information) {
 						return _.findWhere(users, {
 							hashcode: information.hashcode

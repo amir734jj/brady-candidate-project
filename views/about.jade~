@@ -1,8 +1,0 @@
-extends ./layout.jade
-
-block content
-
-	.page-header
-		h2 Like/dislike other's online resume!
-		p
-		|   This website enables users to rate resumes, search through resumes either via keywords or tags
