@@ -7,4 +7,19 @@ block content
 			h2 Welcome #{user.firstName} to Resume archive!
 
 
-			h3 Greetings
+		h2 Who I rated:
+		.list-group
+			- each rate in payload.objects
+				- if (rate.value > 0)
+					li.list-group-item.list-group-item-success #{rate.firstName} #{rate.lastName} #{rate.email}
+				- else if (rate.value < 0)
+					li.list-group-item.list-group-item-danger #{rate.firstName} #{rate.lastName} #{rate.email}
+				
+		h2 Who rated me:    
+		.list-group
+			- each rate in payload.subjects
+				- if (rate.value > 0)
+					li.list-group-item.list-group-item-success #{rate.firstName} #{rate.lastName} #{rate.email}
+				- else if (rate.value < 0)
+					li.list-group-item.list-group-item-danger #{rate.firstName} #{rate.lastName} #{rate.email}
+				

@@ -25,20 +25,35 @@ exports.updateTags = function(req, db, userModel, callback) {
 	});
 }
 
-exports.getRate = function(req, db, rateModel, callback) {
+exports.getMyRateProfile = function(req, db, rateModel, callback) {
 	rateModel.findAll({
 		where: {
 			hashcode: req.session.user.hashcode
 		}
-	}).done(function(rates) {
-		callback(rates);
+	}).done(function(who_I_rated) {
+		rateModel.findAll({
+			where: {
+				target: req.session.user.hashcode
+			}
+		}).done(function(who_rated_me) {
+			callback({
+				"who_I_rated": _.map(who_I_rated, function(rate) {
+					return rate.toJSON()
+				}),
+				"who_rated_me": _.map(who_rated_me, function(rate) {
+					return rate.toJSON()
+				})
+			});
+		});
 	});
 }
 
 
 exports.getRates = function(req, db, rateModel, callback) {
 	rateModel.findAll().done(function(rates) {
-		callback(rates);
+		callback(_.map(rates, function(rate) {
+			return rate.toJSON();
+		}));
 	});
 }
 

@@ -80,8 +80,35 @@ var databaseModels = null;
 
 app.get("/", function(req, res) {
 	if (req.session.user) {
-		res.render("main", {
-			"user": req.session.user
+		authentication.getUsers(req, sequelize, databaseModels.userModel, function(all_users) {
+			metadata.getRates(req, sequelize, databaseModels.rateModel, function(rates) {
+				var payload = {};
+
+				payload.objects = _.map(_.where(rates, {
+					target: req.session.user.hashcode
+				}), function(rate) {
+					user = _.findWhere(all_users, {
+						hashcode: rate.hashcode
+					});
+
+					return _.extend(user, rate);
+				});
+
+				payload.subjects = _.map(_.where(rates, {
+					hashcode: req.session.user.hashcode
+				}), function(rate) {
+					user = _.findWhere(all_users, {
+						hashcode: rate.target
+					});
+
+					return _.extend(user, rate);
+				});
+
+				res.render("main", {
+					"user": req.session.user,
+					"payload": payload
+				});
+			});
 		});
 	} else {
 		res.redirect("login");
@@ -161,7 +188,6 @@ app.get("/image/:filename", function(req, res) {
 	} else {
 		res.redirect("/login");
 	}
-
 });
 
 app.get("/image/:filename/delete", function(req, res) {
@@ -215,7 +241,7 @@ app.get("/profile/list", function(req, res) {
 						}
 					});
 					user.rank = user.like + user.dislike;
-					//user = _.omit(user, "rates");
+					user = _.omit(user, "rates");
 
 					return user;
 				});

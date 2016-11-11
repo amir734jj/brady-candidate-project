@@ -19,25 +19,23 @@ exports.register = function(req, db, userModel, callback) {
 		}
 	}).done(function(user) {
 		if (_.isNull(user)) {
-			userModel.findAll().done(function(usersAll) {
-				userModel.create({
-					firstName: req.body.firstName,
-					lastName: req.body.lastName,
-					email: req.body.email,
-					password: hash(req.body.password),
-					hashcode: hash(req.body.firstName + req.body.lastName + req.body.email),
-					since: new Date(),
-					bio: "",
-					major: "",
-					image: "",
-					filename: "",
-					linkedin: "",
-					twitter: "",
-					facebook: "",
-					tags: ""
-				}).done(function(user) {
-					callback(user.toJSON());
-				});
+			userModel.create({
+				firstName: req.body.firstName,
+				lastName: req.body.lastName,
+				email: req.body.email,
+				password: hash(req.body.password),
+				hashcode: hash(req.body.firstName + req.body.lastName + req.body.email),
+				since: new Date(),
+				bio: "",
+				major: "",
+				image: "",
+				filename: "",
+				linkedin: "",
+				twitter: "",
+				facebook: "",
+				tags: ""
+			}).done(function(user) {
+				callback(user.toJSON());
 			});
 		} else {
 			user.already = true;
@@ -108,6 +106,8 @@ exports.getUserByHashcode = function(req, db, userModel, callback) {
 
 exports.getUsers = function(req, db, userModel, callback) {
 	userModel.findAll().done(function(users) {
-		callback(users);
+		callback(_.map(users, function(user) {
+			return user.toJSON();
+		}));
 	});
 }
