@@ -1,6 +1,7 @@
 extends ./layout.jade
 
 block content
+
 	.page-header
 		h2 Like/dislike other's online resume!
 		p

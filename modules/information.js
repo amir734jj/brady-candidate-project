@@ -26,6 +26,15 @@ exports.get = function(req, db, informationModel, callback) {
 	});
 }
 
+
+exports.getAll = function(req, db, informationModel, callback) {
+	informationModel.findAll().done(function(informations) {
+		callback(_.map(informations, function(information) {
+			return information.toJSON();
+		}));
+	});
+}
+
 exports.getInformationsByHashcode = function(req, db, informationModel, callback) {
 	informationModel.findAll({
 		where: {

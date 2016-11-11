@@ -84,29 +84,34 @@ app.get("/", function(req, res) {
 			metadata.getRates(req, sequelize, databaseModels.rateModel, function(rates) {
 				var payload = {};
 
+				// who rated me
 				payload.objects = _.map(_.where(rates, {
 					target: req.session.user.hashcode
 				}), function(rate) {
 					user = _.findWhere(all_users, {
 						hashcode: rate.hashcode
 					});
-
+					user = _.pick(user, "firstName", "lastName", "email");
 					return _.extend(user, rate);
 				});
 
+				// who I rated
 				payload.subjects = _.map(_.where(rates, {
 					hashcode: req.session.user.hashcode
 				}), function(rate) {
 					user = _.findWhere(all_users, {
 						hashcode: rate.target
 					});
-
+					user = _.pick(user, "firstName", "lastName", "email");
 					return _.extend(user, rate);
 				});
 
+				var rank = payload.objects.length;
+
 				res.render("main", {
 					"user": req.session.user,
-					"payload": payload
+					"payload": payload,
+					"rank": rank
 				});
 			});
 		});
@@ -241,7 +246,7 @@ app.get("/profile/list", function(req, res) {
 						}
 					});
 					user.rank = user.like + user.dislike;
-					user = _.omit(user, "rates");
+					//user = _.omit(user, "rates");
 
 					return user;
 				});
@@ -351,6 +356,46 @@ app.post("/builer/informations/tags", function(req, res) {
 		metadata.updateTags(req, sequelize, databaseModels.userModel, function(tag) {
 			res.sendStatus(200);
 		});
+	} else {
+		res.redirect("/");
+	}
+});
+
+app.get("/search", function(req, res) {
+	if (req.session.user) {
+		if (req.query.keyword) {
+			authentication.getUsers(req, sequelize, databaseModels.userModel, function(users) {
+				var payload = [];
+				var token = req.query.keyword.replace(" ", "").toLowerCase();
+
+				payload = _.union(payload, _.filter(users, function(user) {
+					return JSON.stringify(user).replace(" ", "").toLowerCase().includes(token);
+				}));
+
+				information.getAll(req, sequelize, databaseModels.informationModel, function(informations) {
+					payload = _.union(payload, _.map(_.filter(informations, function(information) {
+						return JSON.stringify(information).replace(" ", "").toLowerCase().includes(token);
+					}), function(information) {
+						return _.findWhere(users, {
+							hashcode: information.hashcode
+						});
+					}));
+
+					payload = _.uniq(payload, "hashcode");
+
+					res.render("search", {
+						"user": req.session.user,
+						"users": payload,
+						"search": true
+					});
+				});
+			});
+		} else {
+			res.render("search", {
+				"user": req.session.user,
+				"search": false
+			});
+		}
 	} else {
 		res.redirect("/");
 	}

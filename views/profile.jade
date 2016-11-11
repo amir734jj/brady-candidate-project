@@ -56,7 +56,7 @@ block content
 		h3 Tags of technologies
 		- each tag in profile.tags.split(";")
 			- if (tag)
-				botton.btn.btn-primary #{tag}
+				a.btn.btn-primary(href="/search?keyword=#{tag}") #{tag}
 		
 	
 	
