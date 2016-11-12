@@ -12,6 +12,6 @@ Test:
     node server.js test
 
 # Known issues:
-bower may need to be install globablly so:
+bower may need to be installed globablly so:
     
     npm install bower -g 
