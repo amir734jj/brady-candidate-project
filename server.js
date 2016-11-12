@@ -167,10 +167,14 @@ app.post("/register", function(req, res) {
 });
 
 app.get("/logout", function(req, res) {
+	req.session = null;
 	req.session.destroy(function(err) {
 		if (err) {
 			console.log(err);
 		} else {
+			if (req.session.user) {
+				console.log("destroy session failed!");
+			}
 			res.redirect("/");
 		}
 	});
@@ -438,5 +442,5 @@ if (args && args[0] == "test") {
 			"databaseModels": databaseModels,
 			"metadata": metadata
 		});
-	}, 5000);  // time for ORM to connect to sqlite
+	}, 5000); // time for ORM to connect to sqlite
 }
