@@ -63,7 +63,7 @@ exports.update = function(req, db, informationModel, callback) {
 		title: req.body.title,
 		start: req.body.start,
 		end: req.body.end,
-		details: quote(req.body.details)
+		details: req.body.details
 	}, {
 		where: {
 			id: req.params.id
@@ -81,27 +81,4 @@ exports.delete = function(req, db, informationModel, callback) {
 	}).done(function(information) {
 		callback(information);
 	});
-}
-
-
-var escapable = /[\\\"\x00-\x1f\x7f-\uffff]/g,
-	meta = { // table of character substitutions
-		'\b': '\\b',
-		'\t': '\\t',
-		'\n': '\\n',
-		'\f': '\\f',
-		'\r': '\\r',
-		'"': '\\"',
-		'\\': '\\\\'
-	};
-
-function quote(string) {
-	escapable.lastIndex = 0;
-	return escapable.test(string) ?
-		'"' + string.replace(escapable, function(a) {
-			var c = meta[a];
-			return typeof c === 'string' ? c :
-				'\\u' + ('0000' + a.charCodeAt(0).toString(16)).slice(-4);
-		}) + '"' :
-		'"' + string + '"';
 }

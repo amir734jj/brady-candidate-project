@@ -45,7 +45,7 @@ app.locals.pretty = true;
 var sequelize = new Sequelize(null, null, null, {
 	dialect: "sqlite",
 	pool: {
-		max: 1,
+		max: 10,
 		min: 0,
 		idle: 10000
 	},

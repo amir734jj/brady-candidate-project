@@ -40,19 +40,19 @@ block content
 				- if (information.type == "education")
 					li.list-group-item
 						h4 #{information.title} (#{information.start} - #{information.end})
-						div!= information.details.replace(/\n/g, '<br />')
+						div!= information.details
 			h3 Experience
 			- each information in informations
 				- if (information.type == "experience")
 					li.list-group-item
 						h4 #{information.title} (#{information.start} - #{information.end})
-						div!= information.details.replace(/\n/g, '<br />')
+						div!= information.details
 			h3 Projects
 			- each information in informations
 				- if (information.type == "project")
 					li.list-group-item
 						h4 #{information.title} (#{information.start} - #{information.end})
-						div!= information.details.replace(/\n/g, '<br />')
+						div!= information.details
 
 	hr
 	- if (profile.tags.split(";").length > 0)

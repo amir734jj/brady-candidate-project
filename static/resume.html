@@ -39,7 +39,7 @@
 					<%=end%>
 				</td>
 				<td>
-					<%=((details && details.length && details.length >= 20) ? details.substring(0, 20) : details ) + "..."%>
+					<%=((detailsText)? ((detailsText.length && detailsText.length >= 20) ? (detailsText.substring(0, 20) + "...") : detailsText) : "-"        )%>
 				</td>
 				<td>
 					<botton class="btn btn-primary" data-action="modify">edit</botton>
@@ -148,7 +148,8 @@
 					type: self.$el.find("[type='radio']:checked").data("type"),
 					start: self.$el.find("[name='start']").val(),
 					end: self.$el.find("[name='end']").val(),
-					details: self.$el.find("textarea").val()
+					details: self.$el.find("textarea").val(),
+					detailsText: $(self.$el.find("textarea").val()).text()
 				});
 
 				if (this.callback) {
@@ -172,7 +173,13 @@
 				title: " ",
 				start: 2015,
 				end: 2016,
-				details: " "
+				details: " ",
+				detailsText: " "
+			},
+			initialize: function() {
+				this.set({
+					detailsText: $(this.get("details")).text() || this.get("details")
+				});
 			}
 		});
 
@@ -282,7 +289,7 @@
 		$(document).on('DOMNodeInserted', function(e) {
 			if ($(e.target).find("textarea[name='details']")) {
 				$(e.target).find("textarea[name='details']").summernote({
-					 height: 200,
+					height: 200,
 					dialogsInBody: true,
 					toolbar: [
 						['style', ['bold', 'italic', 'underline', 'clear']],
