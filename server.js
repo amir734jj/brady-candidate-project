@@ -167,14 +167,11 @@ app.post("/register", function(req, res) {
 });
 
 app.get("/logout", function(req, res) {
-	req.session = null;
 	req.session.destroy(function(err) {
 		if (err) {
 			console.log(err);
 		} else {
-			if (req.session.user) {
-				console.log("destroy session failed!");
-			}
+			req.session = null;
 			res.redirect("/");
 		}
 	});
