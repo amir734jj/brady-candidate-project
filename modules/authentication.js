@@ -64,10 +64,13 @@ exports.update = function(req, db, userModel, callback) {
 	}).done(function(rows) {
 		userModel.findOne({
 			where: {
-				email: req.body.email
+				email: req.session.user.email
 			}
 		}).done(function(user) {
-			callback(user);
+			req.session.regenerate(function(err) {
+				req.session.user = user;
+				callback(user);
+			});
 		});
 	});
 }
@@ -82,10 +85,13 @@ exports.deletePhoto = function(req, db, userModel, callback) {
 	}).done(function(rows) {
 		userModel.findOne({
 			where: {
-				email: req.body.email
+				email: req.session.user.email
 			}
 		}).done(function(user) {
-			callback(user);
+			req.session.regenerate(function(err) {
+				req.session.user = user;
+				callback(user);
+			});
 		});
 	});
 }

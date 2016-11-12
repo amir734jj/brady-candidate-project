@@ -277,5 +277,23 @@
 			'removeWithBackspace': true,
 			'placeholderColor': '#666666'
 		}).importTags(tags);
+
+
+		$(document).on('DOMNodeInserted', function(e) {
+			if ($(e.target).find("textarea[name='details']")) {
+				$(e.target).find("textarea[name='details']").summernote({
+					 height: 200,
+					dialogsInBody: true,
+					toolbar: [
+						['style', ['bold', 'italic', 'underline', 'clear']],
+						['fontsize', ['fontsize']],
+						['color', ['color']],
+						['para', ['ul', 'ol', 'paragraph']],
+						['height', ['height']]
+					]
+				});
+			}
+		});
+
 	});
 </script>

@@ -1,23 +1,24 @@
 {
   "name": "brady-proposal",
   "version": "1.0.0",
-  "description": "",
+  "description": "Brady candidate project",
   "main": "server.js",
   "directories": {
     "test": "test"
   },
   "dependencies": {
     "body-parser": "^1.15.2",
-    "connect-session-sequelize": "^4.1.0-beta.1",
+    "bower": "^1.8.0",
     "connect": "^3.5.0",
+    "connect-session-sequelize": "^4.1.0-beta.1",
     "express": "^4.14.0",
-    "init": "^0.1.2",
     "express-session": "^1.14.2",
+    "init": "^0.1.2",
     "jade": "^1.11.0",
     "multer": "^1.2.0",
     "sequelize": "^3.24.8",
-    "sha1": "^1.1.1",
     "serve-favicon": "^2.3.0",
+    "sha1": "^1.1.1",
     "sqlite3": "^3.1.8",
     "underscore": "^1.8.3"
   },

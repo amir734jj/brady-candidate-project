@@ -2,6 +2,18 @@ extends ./layout.jade
 
 block content
 	.page-header
-		h2 Like/dislike other's online resume!
+		h3 
+			i.fa.fa-flag
+			|  Like/dislike other's online resume!
+
+		h4  This website enables users to rate resumes, search through resumes either via keywords or tags.
 		p
-		|   This website enables users to rate resumes, search through resumes either via keywords or tags
+		|   Backend is written in node.js (socket), express.js (web framework), Sequelize.js (ORM), SQLite (databse),
+		|   Backbone.js (MVC front-end framework) and bootstrap (responsive front-end).
+
+		p
+		|   The aim of this project is to show knowledge with database, REST api, front-end MVC framework and modular design.
+
+		p
+		|   This website uses sessions to store cookies and passwords are hashed and are not kept as plaintext in database.
+		|   We used SHA-1 for simplicity and speed. SHA-1 is deprecated, so please do not use it for production phase of this project.

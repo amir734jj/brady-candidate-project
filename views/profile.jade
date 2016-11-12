@@ -1,7 +1,10 @@
 extends ./layout.jade
 
+block head
+	script(src="/public/libraries/Jdenticon/dist/jdenticon.min.js")
+	
 block content
-	.col-md-8
+	.col-xs-12.col-md-8
 		h2
 			|  #{profile.firstName}  #{profile.lastName}
 		.clearfix
@@ -21,11 +24,11 @@ block content
 		a.btn.btn-default(href="#{profile.facebook}")
 			i.fa.fa-facebook-square.fa-2x(aria-hidden="true")
 
-	.col-md-4.hidden-xs
+	.col-xs-6.col-md-4.hidden-sm
 		- if (profile.image && profile.image == true)
-			img(src="/image/#{profile.filename}", class="img-rounded", style="max-width: 200px;")
+			img.hidden-xs(src="/image/#{profile.filename}", class="img-rounded", style="max-width: 200px;")
 		- else
-			canvas(data-jdenticon-hash="#{profile.hashcode}", class="img-rounded", width="304", height="236")
+			canvas.hidden-xs(data-jdenticon-hash="#{profile.hashcode}", class="img-rounded", width="304", height="236")
 
 	.clearfix
 

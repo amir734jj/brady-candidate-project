@@ -35,6 +35,7 @@ app.use(bodyParser.urlencoded({
 }));
 
 app.use("/static", express.static(path.join(__dirname, "static")))
+app.use("/public", express.static(path.join(__dirname, "public")))
 app.use(favicon(path.join(__dirname, '/public/images/favicon.ico')));
 
 // beautify generated HTML
@@ -203,7 +204,7 @@ app.get("/image/:filename/delete", function(req, res) {
 				fs.unlinkSync("./uploads/" + req.params.filename);
 			} catch (e) {}
 
-			res.redirect("/logout");
+			res.redirect("/account");
 
 		})
 	} else {
@@ -215,7 +216,7 @@ app.post("/account", upload.single("image"), function(req, res) {
 	if (req.session.user) {
 		authentication.update(req, sequelize, databaseModels.userModel,
 			function(user) {
-				res.redirect("/logout");
+				res.redirect("/account");
 			});
 	} else {
 		res.redirect("/");
@@ -419,4 +420,23 @@ var getFileExt = function(fileName) {
 		return "";
 	}
 	return fileExt.pop();
+}
+
+
+/*
+ *   unit testing
+ */
+var args = process.argv.slice(2);
+
+if (args && args[0] == "test") {
+	setTimeout(function() {
+		test = require("./modules/test.js").start;
+		test.call({
+			"authentication": authentication,
+			"information": information,
+			"sequelize": sequelize,
+			"databaseModels": databaseModels,
+			"metadata": metadata
+		});
+	}, 5000);  // time for ORM to connect to sqlite
 }

@@ -6,7 +6,7 @@ block content
 		h2 Welcome #{user.firstName} to Resume archive!
 		h3 Your ranks is: #{rank}    
 
-		h2 Who I rated:
+		h2 List of users who I rated:
 		.list-group
 			- each rate in payload.subjects
 				- if (rate.value > 0)
@@ -14,7 +14,7 @@ block content
 				- else if (rate.value < 0)
 					li.list-group-item.list-group-item-danger #{rate.firstName} #{rate.lastName} #{rate.email}
 				
-		h2 Who rated me:    
+		h2 List of users who rated me:    
 		.list-group
 			- each rate in payload.objects
 				- if (rate.value > 0)
