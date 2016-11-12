@@ -33,11 +33,6 @@ html(lang="en")
 									| &nbsp About Us
 
 					ul.nav.navbar-nav.navbar-right
-						- if (user && user.admin)
-							li
-								a(href="/administrative")
-									i(class="fa fa-sign-out")
-									| &nbsp Administrative
 						- if (user)
 							li
 								a(href="/search")
