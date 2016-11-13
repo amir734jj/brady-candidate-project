@@ -67,10 +67,7 @@ exports.update = function(req, db, userModel, callback) {
 				email: req.session.user.email
 			}
 		}).done(function(user) {
-			req.session.regenerate(function(err) {
-				req.session.user = user;
-				callback(user);
-			});
+			callback(user);
 		});
 	});
 }

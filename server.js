@@ -203,11 +203,11 @@ app.get("/image/:filename/delete", function(req, res) {
 			try {
 				fs.accessSync(path, fs.F_OK);
 				fs.unlinkSync("./uploads/" + req.params.filename);
+				res.redirect("/logout");
 			} catch (e) {}
 
 			res.redirect("/account");
-
-		})
+		});
 	} else {
 		res.redirect("/login");
 	}
@@ -217,7 +217,7 @@ app.post("/account", upload.single("image"), function(req, res) {
 	if (req.session.user) {
 		authentication.update(req, sequelize, databaseModels.userModel,
 			function(user) {
-				res.redirect("/account");
+				res.redirect("/logout");
 			});
 	} else {
 		res.redirect("/");
