@@ -20,6 +20,7 @@
     "bootstrap": "^3.3.7",
     "summernote": "^0.8.2",
     "jquery.tagsinput": "^1.3.6",
-    "font-awesome": "fontawesome#^4.7.0"
+    "font-awesome": "fontawesome#^4.7.0",
+    "Jdenticon": "https://github.com/dmester/jdenticon.git#^1.3.2"
   }
 }
