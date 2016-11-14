@@ -47,8 +47,9 @@ exports.getInformationsByHashcode = function(req, db, informationModel, callback
 
 		informations.sort(function(a, b) {
 			try {
-				return parseInt(a.end) - parseInt(b.end);
+				return -1 * (parseInt(a.end) - parseInt(b.end));
 			} catch (error) {
+			    console.log("error in sorting");
 				return -1;
 			}
 		})
