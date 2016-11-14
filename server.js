@@ -203,10 +203,9 @@ app.get("/image/:filename/delete", function(req, res) {
 			try {
 				fs.accessSync(path, fs.F_OK);
 				fs.unlinkSync("./uploads/" + req.params.filename);
-				res.redirect("/logout");
 			} catch (e) {}
 
-			res.redirect("/account");
+			res.redirect("/logout");
 		});
 	} else {
 		res.redirect("/login");
