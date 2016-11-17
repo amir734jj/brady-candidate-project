@@ -133,7 +133,9 @@ app.get("/login", function(req, res) {
 	if (req.session.user) {
 		res.redirect("/");
 	} else {
-		res.render("login");
+		res.render("login", {
+			"user": null // value of user should be null, something is wrong with jade!
+		});
 	}
 });
 
